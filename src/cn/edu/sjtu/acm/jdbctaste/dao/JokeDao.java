@@ -11,7 +11,7 @@ public interface JokeDao {
 	 * Insert a joke into the database, it will ignore its `id` and `postTime` fields. 
 	 * After insertion, these two field will be automatically filled.
 	 * @param joke
-	 * @return its id
+	 * @return its id, -1 if failed
 	 */
 	public int insertJoke(Joke joke);
 

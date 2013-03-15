@@ -10,7 +10,7 @@ public interface PersonDao {
 	 * Insert a person into the database. It will ignore the id field.
 	 * Once created, it will automatically field its id.
 	 * @param person
-	 * @return the id of that person
+	 * @return the id of that person, or -1 if failed
 	 */
 	public int insertPerson(Person person);
 

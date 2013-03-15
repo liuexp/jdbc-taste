@@ -12,7 +12,7 @@ public interface CommentDao {
 	 * Create a comment in the database. It will ignore the id and postTime fields.
 	 * Once created, these two fields will be automatically filled.
 	 * @param comment
-	 * @return the id of this comment
+	 * @return the id of this comment, -1 if failed
 	 */
 	public int insertComment(Comment comment);
 
