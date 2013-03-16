@@ -26,7 +26,7 @@ public class DeleteJokeTest extends CombinedTask{
 		@Override
 		public boolean doit() {
 			try {
-				Joke joke = factory.getJokeDao().findJokeById(0);
+				Joke joke = factory.getJokeDao().findJokeById(1);
 				factory.getJokeDao().deleteJoke(joke);
 				assertEqual(factory.getJokeDao().getAllJokes().size(), 29);
 				assertEqual(factory.getCommentDao().getAllComments().size(), 870);

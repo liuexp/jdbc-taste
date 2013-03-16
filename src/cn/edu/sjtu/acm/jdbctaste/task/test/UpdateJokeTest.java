@@ -27,19 +27,19 @@ public class UpdateJokeTest extends CombinedTask{
 		}
 
 		private void testFindJoke () {
-			Person acm0 = factory.getPersonDao().findPersonByEmail("acm0@sjtu.edu.cn");
+			Person acm1 = factory.getPersonDao().findPersonByEmail("acm1@sjtu.edu.cn");
 			
-			List<Joke> jokesOfAcm0 = factory.getJokeDao().findJokesOfPerson(acm0);
+			List<Joke> jokesOfAcm1 = factory.getJokeDao().findJokesOfPerson(acm1);
 			
-			assertEqual (jokesOfAcm0.size(), 1);
+			assertEqual (jokesOfAcm1.size(), 1);
 			
-			Joke joke = jokesOfAcm0.get(0);
+			Joke joke = jokesOfAcm1.get(0);
 			
-			assertEqual (joke.getBody(), "hehe from person0");
+			assertEqual (joke.getBody(), "hehe from person1");
 		}
 		
 		private void testZan () {
-			Joke joke = factory.getJokeDao().findJokeById(0);
+			Joke joke = factory.getJokeDao().findJokeById(1);
 			for (int i = 0; i < 100; i ++) joke.up();
 			factory.getJokeDao().updateJoke(joke);
 			
