@@ -17,7 +17,7 @@ public class FillTableTask implements TasteTask {
 	}
 
 	private void fillPersonTable() {
-		for (int i = 0; i < 30; ++i) {
+		for (int i = 1; i <= 30; ++i) {
 			factory.getPersonDao().insertPerson(
 					new Person("person" + i, "acm" + i + "@sjtu.edu.cn"));
 		}

@@ -28,7 +28,7 @@ public class DeleteCommentTest extends CombinedTask {
 		@Override
 		public boolean doit() {
 			try {
-				Person person = factory.getPersonDao().findPersonById(0);
+				Person person = factory.getPersonDao().findPersonById(1);
 				
 				List<Comment> hisComments = factory.getCommentDao().findCommentsOfPerson(person);
 				assertEqual(hisComments.size(), 30);

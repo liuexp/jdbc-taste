@@ -29,7 +29,7 @@ public class UpdateCommentTest extends CombinedTask {
 		@Override
 		public boolean doit() {
 			try {
-				Joke joke = factory.getJokeDao().findJokeById(0);
+				Joke joke = factory.getJokeDao().findJokeById(1);
 
 				List<Comment> comments = factory.getCommentDao()
 						.findCommentsOfJoke(joke);

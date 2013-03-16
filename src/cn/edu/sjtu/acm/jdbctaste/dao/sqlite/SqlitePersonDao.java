@@ -33,9 +33,9 @@ public class SqlitePersonDao implements PersonDao {
 			stat.setString(1, person.getName());
 			stat.setString(2, person.getEmail());
 
-			ResultSet rs = stat.getGeneratedKeys();
-			
 			stat.executeUpdate();
+			
+			ResultSet rs = stat.getGeneratedKeys();
 			
 			if (rs.next()) {
 				int id = rs.getInt(1);

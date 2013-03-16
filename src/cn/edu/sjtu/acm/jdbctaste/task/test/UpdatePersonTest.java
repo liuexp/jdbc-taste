@@ -26,15 +26,15 @@ public class UpdatePersonTest extends CombinedTask{
 		@Override
 		public boolean doit() {
 			try {
-				Person acm0 = factory.getPersonDao().findPersonByEmail("acm0@sjtu.edu.cn");
-				Person newAcm0 = new Person(acm0.getId(), "newAcm0", "newacm0@sjtu.edu.cn");
-				factory.getPersonDao().updatePerson(newAcm0);
+				Person acm1 = factory.getPersonDao().findPersonByEmail("acm1@sjtu.edu.cn");
+				Person newAcm1 = new Person(acm1.getId(), "newAcm1", "newacm1@sjtu.edu.cn");
+				factory.getPersonDao().updatePerson(newAcm1);
 				
-				Person fetchedPerson = factory.getPersonDao().findPersonById(acm0.getId());
+				Person fetchedPerson = factory.getPersonDao().findPersonById(acm1.getId());
 				
-				assertEqual(fetchedPerson.getName(), "newAcm0");
-				assertEqual(fetchedPerson.getEmail(), "newacm0@sjtu.edu.cn");
-				assertEqual(factory.getPersonDao().getNumOfJokes(newAcm0), 1);
+				assertEqual(fetchedPerson.getName(), "newAcm1");
+				assertEqual(fetchedPerson.getEmail(), "newacm1@sjtu.edu.cn");
+				assertEqual(factory.getPersonDao().getNumOfJokes(newAcm1), 1);
 			} catch (Exception e) {
 				e.printStackTrace();
 				return false;

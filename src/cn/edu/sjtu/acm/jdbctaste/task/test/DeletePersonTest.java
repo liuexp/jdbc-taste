@@ -26,8 +26,8 @@ public class DeletePersonTest extends CombinedTask {
 		@Override
 		public boolean doit() {
 			try {
-				Person acm0 = factory.getPersonDao().findPersonByEmail("acm0@sjtu.edu.cn");
-				factory.getPersonDao().deletePerson(acm0);
+				Person acm1 = factory.getPersonDao().findPersonByEmail("acm1@sjtu.edu.cn");
+				factory.getPersonDao().deletePerson(acm1);
 				assertEqual(factory.getPersonDao().getAllPerson().size(), 29);
 				assertEqual(factory.getJokeDao().getAllJokes().size(), 29);
 				assertEqual(factory.getCommentDao().getAllComments().size(), 841);
