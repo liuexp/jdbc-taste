@@ -19,10 +19,9 @@ public class CreateTablesTask implements TasteTask {
 
 	private static final String PERSON_SCHEMA = 
 			"create table person(" +
-			"id int auto_increment," +
+			"id integer primary key autoincrement," +
 			"name varchar(200) not null," +
-			"email varchar(200) not null," +
-			"primary key(id));";
+			"email varchar(200) not null);";
 
 	// TODO Write a schema for table joke
 	private static final String JOKE_SCHEMA = "";
