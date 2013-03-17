@@ -35,7 +35,7 @@ public class UpdateJokeTest extends CombinedTask{
 			
 			Joke joke = jokesOfAcm1.get(0);
 			
-			assertEqual (joke.getBody(), "hehe from person1");
+			assertEqual (joke.getBody(), "person1");
 		}
 		
 		private void testZan () {
