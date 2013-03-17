@@ -21,6 +21,7 @@
 
   <target name="deploy" depends="compile">
     <mkdir dir="${dst.dir}"/>
+    <mkdir dir="${dst.dir}/db"/>
     <jar jarfile="${dst.dir}/jdbctaste.jar" basedir="${bin.dir}">
       <zipfileset includes="**/*.class" src="lib/sqlite-jdbc-3.7.2.jar"/>
       <manifest>
