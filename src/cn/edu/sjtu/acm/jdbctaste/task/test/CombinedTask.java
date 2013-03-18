@@ -8,20 +8,20 @@ import cn.edu.sjtu.acm.jdbctaste.TasteTask;
 public class CombinedTask extends TestTask {
 
 	protected List<TasteTask> tasks;
-	
-	public CombinedTask () {
-		tasks = new LinkedList<TasteTask> ();
+
+	public CombinedTask() {
+		tasks = new LinkedList<TasteTask>();
 	}
-	
+
 	protected void addTask(TasteTask task) {
 		tasks.add(task);
 	}
-	
+
 	@Override
 	public boolean doit() {
-		for (TasteTask task: tasks)
-			if (!task.doit())
-				return false;
-		return true;
+		boolean ret = true;
+		for (TasteTask task : tasks)
+			ret &= task.doit();
+		return ret;
 	}
 }
