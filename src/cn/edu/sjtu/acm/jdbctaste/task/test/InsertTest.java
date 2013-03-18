@@ -49,7 +49,7 @@ public class InsertTest extends CombinedTask {
 						.findCommentsOfJoke(joke).get(0);
 				assertEqual(
 						fetchedComment.getBody(),
-						"大学时，有一次包夜回宿舍，没带钥匙，回去敲门门开了，然后那人往我床上一躺倒头就睡，哥就火了，没事睡我床干嘛。果断一脚带他踹起来，惊讶的发现这人我不认识，哥默默的退了出去。");
+						"顶的好舒服！");
 				assertEqual(fetchedComment.getCommentator().getName(),
 						"Zhao Benshan");
 				assertEqual(fetchedComment.getJoke().getSpeaker().getName(),
