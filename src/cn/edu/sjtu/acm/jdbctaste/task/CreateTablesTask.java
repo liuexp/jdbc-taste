@@ -23,17 +23,28 @@ public class CreateTablesTask implements TasteTask {
 			"name varchar(200) not null," +
 			"email varchar(200) not null);";
 
-	// TODO Write a schema for table joke
-	private static final String JOKE_SCHEMA = "";
+	private static final String JOKE_SCHEMA = 
+			"create table joke(" +
+			"id integer primary key autoincrement," +
+			"speaker integer not null," +
+			"body varchar(200) not null," +
+			"postTime timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP," +
+			"zan integer);";
 
-	// TODO Write a schema for table comment
-	private static final String COMMENT_SCHEMA = "";
+	private static final String COMMENT_SCHEMA = 
+			"create table comment(" +
+			"id integer primary key autoincrement," +
+			"jokeid integer not null," +
+			"commentator integer not null," +
+			"body varchar(200) not null," +
+			"postTime timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);";
 
 	@Override
 	public boolean doit() {
 		try {
 			taste.getDaoFactory().getConn().createStatement().execute(PERSON_SCHEMA);
-			// TODO create joke table and comment table
+			taste.getDaoFactory().getConn().createStatement().execute(JOKE_SCHEMA);
+			taste.getDaoFactory().getConn().createStatement().execute(COMMENT_SCHEMA);
 		} catch (Exception e){
 			e.printStackTrace();
 			return false;

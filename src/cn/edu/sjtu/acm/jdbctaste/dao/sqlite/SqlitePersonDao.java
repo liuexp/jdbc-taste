@@ -27,15 +27,15 @@ public class SqlitePersonDao implements PersonDao {
 		int ret = -1;
 
 		try {
-			PreparedStatement stat = conn.prepareStatement(
+			PreparedStatement stmt = conn.prepareStatement(
 					"insert into person (name, email) values (?,?);",
 					Statement.RETURN_GENERATED_KEYS);
-			stat.setString(1, person.getName());
-			stat.setString(2, person.getEmail());
+			stmt.setString(1, person.getName());
+			stmt.setString(2, person.getEmail());
 
-			stat.executeUpdate();
+			stmt.executeUpdate();
 			
-			ResultSet rs = stat.getGeneratedKeys();
+			ResultSet rs = stmt.getGeneratedKeys();
 			
 			if (rs.next()) {
 				int id = rs.getInt(1);
@@ -44,7 +44,7 @@ public class SqlitePersonDao implements PersonDao {
 			}
 
 			rs.close();
-			stat.close();
+			stmt.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			ret = -1;
@@ -55,8 +55,27 @@ public class SqlitePersonDao implements PersonDao {
 
 	@Override
 	public boolean deletePerson(Person person) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean flag ;
+		try {
+			PreparedStatement stmt = conn.prepareStatement(
+					"delete from person where id = ?;",
+					Statement.RETURN_GENERATED_KEYS);
+			stmt.setString(1, person.getId());
+
+			stmt.executeUpdate();
+
+			ResultSet rs = stmt.getGeneratedKeys();
+			if (rs.next()) {
+				//FIXME: what if delete non existing stuff
+			}
+			flag = true;
+			rs.close();
+			stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			flag = false;
+		}
+		return flag;
 	}
 
 	@Override
@@ -81,19 +100,19 @@ public class SqlitePersonDao implements PersonDao {
 	public List<Person> getAllPerson() {
 		List<Person> ret = new LinkedList<Person>();
 
-		Statement stat;
+		Statement stmt;
 		try {
-			stat = conn.createStatement();
+			stmt = conn.createStatement();
 
-			stat.execute("select * from person;");
-			ResultSet result = stat.getResultSet();
+			stmt.execute("select * from person;");
+			ResultSet result = stmt.getResultSet();
 
 			while (result.next()) {
 				ret.add(new Person(result.getInt(IDX_ID), result
 						.getString(IDX_NAME), result.getString(IDX_EMAIL)));
 			}
 			result.close();
-			stat.close();
+			stmt.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;

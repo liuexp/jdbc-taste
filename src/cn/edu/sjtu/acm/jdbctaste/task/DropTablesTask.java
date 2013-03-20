@@ -20,7 +20,8 @@ public class DropTablesTask implements TasteTask {
 	public boolean doit() {
 		try {
 			taste.getDaoFactory().getConn().createStatement().execute("drop table person;");
-			// TODO drop other tables
+			taste.getDaoFactory().getConn().createStatement().execute("drop table joke;");
+			taste.getDaoFactory().getConn().createStatement().execute("drop table comment;");
 		} catch (Exception e){
 			e.printStackTrace();
 			return false;

@@ -20,8 +20,9 @@ public class SqliteDaoFactory extends DaoFactory {
 	private SqliteDaoFactory() {
 		try {
 			Class.forName("org.sqlite.JDBC");
-			conn = DriverManager.getConnection("jdbc:sqlite:db/jdbc-taste.db");
+			conn = DriverManager.getConnection("jdbc:sqlite:/home/liuexp/projects/jdbc-taste/db/jdbc-taste.db");
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new RuntimeException("sqlite Connection cannot set up!");
 		}
 	}
