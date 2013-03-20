@@ -60,12 +60,12 @@ public class SqlitePersonDao implements PersonDao {
 			PreparedStatement stmt = conn.prepareStatement(
 					"delete from person where id = ?;",
 					Statement.RETURN_GENERATED_KEYS);
-			stmt.setString(1, person.getId());
+			stmt.setInt(1, person.getId());
 
 			stmt.executeUpdate();
 
 			ResultSet rs = stmt.getGeneratedKeys();
-			if (rs.next()) {
+			if (!rs.next()) {
 				//FIXME: what if delete non existing stuff
 			}
 			flag = true;

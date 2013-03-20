@@ -57,10 +57,10 @@ public class SqliteJokeDao implements JokeDao {
 		Joke ret = null;
 
 		try {
-			PreparedStatement stat = conn
+			PreparedStatement stmt = conn
 					.prepareStatement("select * from joke where id = ?;");
-			stat.setInt(1, id);
-			ResultSet result = stat.executeQuery();
+			stmt.setInt(1, id);
+			ResultSet result = stmt.executeQuery();
 			if (!result.next())
 				return null;
 
@@ -72,7 +72,7 @@ public class SqliteJokeDao implements JokeDao {
 					result.getTimestamp(IDX_POST_TIME), result.getInt(IDX_ZAN));
 			
 			result.close();
-			stat.close();
+			stmt.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

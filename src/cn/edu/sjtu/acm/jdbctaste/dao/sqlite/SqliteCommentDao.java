@@ -1,6 +1,11 @@
 package cn.edu.sjtu.acm.jdbctaste.dao.sqlite;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.LinkedList;
 import java.util.List;
 
 import cn.edu.sjtu.acm.jdbctaste.dao.CommentDao;
@@ -37,7 +42,7 @@ public class SqliteCommentDao implements CommentDao {
 			
 			if (rs.next()) {
 				int id = rs.getInt(1);
-				person.setId(id);
+				comment.setId(id);
 				ret = id;
 			}
 
@@ -78,6 +83,7 @@ public class SqliteCommentDao implements CommentDao {
 
 	@Override
 	public boolean updateComment(Comment comment) {
+		boolean flag;
 		try {
 			PreparedStatement stmt = conn.prepareStatement(
 					"update comment set jokeid=?, commentator=?, body=? where id=? ;",
@@ -115,7 +121,7 @@ public class SqliteCommentDao implements CommentDao {
 			while(rs.next()){
 				ret.add(new Comment(rs.getInt(IDX_ID),
 							SqliteDaoFactory.getInstance().getJokeDao().findJokeById(rs.getInt(IDX_JOKE)),
-							person.getId(),
+							SqliteDaoFactory.getInstance().getPersonDao().findPersonById(person.getId()),
 							rs.getString(IDX_BODY),
 							rs.getTimestamp(IDX_POST_TIME)));
 			}
@@ -131,9 +137,9 @@ public class SqliteCommentDao implements CommentDao {
 	@Override
 	public List<Comment> findCommentsReceived(Person person) {
 		List<Comment> ret = new LinkedList<Comment>();
-		List<Joke> tmp = findJokesOfPerson(person);
-		for(x : tmp){
-			ret.add(findCommentsOfJoke(x));
+		List<Joke> tmp = SqliteDaoFactory.getInstance().getJokeDao().findJokesOfPerson(person);
+		for(Joke x : tmp){
+			ret.addAll(findCommentsOfJoke(x));
 		}
 		return ret;
 	}
@@ -149,7 +155,7 @@ public class SqliteCommentDao implements CommentDao {
 
 			while(rs.next()){
 				ret.add(new Comment(rs.getInt(IDX_ID),
-							joke.getId(),
+						SqliteDaoFactory.getInstance().getJokeDao().findJokeById(joke.getId()),
 							SqliteDaoFactory.getInstance().getPersonDao().findPersonById(rs.getInt(IDX_COMMENTATOR)),
 							rs.getString(IDX_BODY),
 							rs.getTimestamp(IDX_POST_TIME)));
@@ -195,7 +201,7 @@ public class SqliteCommentDao implements CommentDao {
 		Comment ret = null;
 		try {
 			PreparedStatement stmt = conn.prepareStatement("select * from comment where id = ?;");
-			stmt.setInt(1, comment.getId());
+			stmt.setInt(1, id);
 
 			ResultSet rs = stmt.executeQuery();
 			if (!rs.next()) {
@@ -205,15 +211,14 @@ public class SqliteCommentDao implements CommentDao {
 							SqliteDaoFactory.getInstance().getJokeDao().findJokeById(rs.getInt(IDX_JOKE)),
 							SqliteDaoFactory.getInstance().getPersonDao().findPersonById(rs.getInt(IDX_COMMENTATOR)),
 							rs.getString(IDX_BODY),
-							rs.getTimestamp(IDX_POST_TIME))
+							rs.getTimestamp(IDX_POST_TIME));
 			rs.close();
 			stmt.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			flag = false;
 		}
 
-		return null;
+		return ret;
 	}
 
 }
