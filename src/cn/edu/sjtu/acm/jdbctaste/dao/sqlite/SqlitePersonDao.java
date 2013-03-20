@@ -9,6 +9,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import cn.edu.sjtu.acm.jdbctaste.dao.PersonDao;
+import cn.edu.sjtu.acm.jdbctaste.entity.Comment;
+import cn.edu.sjtu.acm.jdbctaste.entity.Joke;
 import cn.edu.sjtu.acm.jdbctaste.entity.Person;
 
 public class SqlitePersonDao implements PersonDao {
@@ -57,6 +59,16 @@ public class SqlitePersonDao implements PersonDao {
 	public boolean deletePerson(Person person) {
 		boolean flag ;
 		try {
+			List<Comment> tmp2 = SqliteDaoFactory.getInstance().getCommentDao().findCommentsOfPerson(person);
+			for(Comment x:tmp2){
+				SqliteDaoFactory.getInstance().getCommentDao().deleteComment(x);
+			}
+			
+			List<Joke> tmp = SqliteDaoFactory.getInstance().getJokeDao().findJokesOfPerson(person);
+			for(Joke x:tmp){
+				SqliteDaoFactory.getInstance().getJokeDao().deleteJoke(x);
+			}
+			
 			PreparedStatement stmt = conn.prepareStatement(
 					"delete from person where id = ?;",
 					Statement.RETURN_GENERATED_KEYS);
@@ -65,10 +77,7 @@ public class SqlitePersonDao implements PersonDao {
 			stmt.executeUpdate();
 
 			ResultSet rs = stmt.getGeneratedKeys();
-			if (!rs.next()) {
-				//FIXME: what if delete non existing stuff
-			}
-			flag = true;
+			flag = rs.next();
 			rs.close();
 			stmt.close();
 		} catch (SQLException e) {
@@ -92,10 +101,7 @@ public class SqlitePersonDao implements PersonDao {
 			stmt.executeUpdate();
 
 			ResultSet rs = stmt.getGeneratedKeys();
-			if (!rs.next()) {
-				//FIXME: what if delete non existing stuff
-			}
-			flag = true;
+			flag = rs.next();
 			rs.close();
 			stmt.close();
 		} catch (SQLException e) {

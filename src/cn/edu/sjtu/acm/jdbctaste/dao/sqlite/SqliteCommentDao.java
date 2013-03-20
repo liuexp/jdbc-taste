@@ -34,7 +34,7 @@ public class SqliteCommentDao implements CommentDao {
 					Statement.RETURN_GENERATED_KEYS);
 			stmt.setInt(1, comment.getJoke().getId());
 			stmt.setInt(2, comment.getCommentator().getId());
-			stmt.setString(2, comment.getBody());
+			stmt.setString(3, comment.getBody());
 
 			stmt.executeUpdate();
 			
@@ -68,10 +68,7 @@ public class SqliteCommentDao implements CommentDao {
 			stmt.executeUpdate();
 
 			ResultSet rs = stmt.getGeneratedKeys();
-			if (!rs.next()) {
-				//FIXME: what if delete non existing stuff
-			}
-			flag = true;
+			flag = rs.next();
 			rs.close();
 			stmt.close();
 		} catch (SQLException e) {
@@ -96,10 +93,7 @@ public class SqliteCommentDao implements CommentDao {
 			stmt.executeUpdate();
 
 			ResultSet rs = stmt.getGeneratedKeys();
-			if (!rs.next()) {
-				//FIXME: what if delete non existing stuff
-			}
-			flag = true;
+			flag = rs.next();
 			rs.close();
 			stmt.close();
 		} catch (SQLException e) {

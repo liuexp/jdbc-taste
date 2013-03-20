@@ -10,6 +10,7 @@ import java.util.List;
 
 import cn.edu.sjtu.acm.jdbctaste.dao.JokeDao;
 import cn.edu.sjtu.acm.jdbctaste.dao.PersonDao;
+import cn.edu.sjtu.acm.jdbctaste.entity.Comment;
 import cn.edu.sjtu.acm.jdbctaste.entity.Joke;
 import cn.edu.sjtu.acm.jdbctaste.entity.Person;
 
@@ -60,6 +61,11 @@ public class SqliteJokeDao implements JokeDao {
 	public boolean deleteJoke(Joke joke) {
 		boolean flag ;
 		try {
+			List<Comment> tmp = SqliteDaoFactory.getInstance().getCommentDao().findCommentsOfJoke(joke);
+			for(Comment x:tmp){
+				SqliteDaoFactory.getInstance().getCommentDao().deleteComment(x);
+			}
+			
 			PreparedStatement stmt = conn.prepareStatement(
 					"delete from joke where id = ?;",
 					Statement.RETURN_GENERATED_KEYS);
@@ -68,10 +74,7 @@ public class SqliteJokeDao implements JokeDao {
 			stmt.executeUpdate();
 
 			ResultSet rs = stmt.getGeneratedKeys();
-			if (!rs.next()) {
-				//FIXME: what if delete non existing stuff
-			}
-			flag = true;
+			flag = rs.next();
 			rs.close();
 			stmt.close();
 		} catch (SQLException e) {
@@ -96,10 +99,8 @@ public class SqliteJokeDao implements JokeDao {
 			stmt.executeUpdate();
 
 			ResultSet rs = stmt.getGeneratedKeys();
-			if (!rs.next()) {
-				//FIXME: what if delete non existing stuff
-			}
-			flag = true;
+			
+			flag = rs.next();
 			rs.close();
 			stmt.close();
 		} catch (SQLException e) {
