@@ -27,17 +27,17 @@ public class CreateTablesTask implements TasteTask {
 			"create table joke(" +
 			"id integer primary key autoincrement," +
 			"speaker integer not null," +
-			"body varchar(200) not null," +
-			"postTime timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP," +
-			"zan integer);";
+			"body varchar(200) ," +
+			"postTime timestamp not null default CURRENT_TIMESTAMP," +
+			"zan integer not null default 0);";
 
 	private static final String COMMENT_SCHEMA = 
 			"create table comment(" +
 			"id integer primary key autoincrement," +
 			"jokeid integer not null," +
 			"commentator integer not null," +
-			"body varchar(200) not null," +
-			"postTime timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);";
+			"body varchar(200) ," +
+			"postTime timestamp not null default CURRENT_TIMESTAMP);";
 
 	@Override
 	public boolean doit() {

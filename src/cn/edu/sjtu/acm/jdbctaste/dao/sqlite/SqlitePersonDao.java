@@ -80,20 +80,72 @@ public class SqlitePersonDao implements PersonDao {
 
 	@Override
 	public boolean updatePerson(Person person) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean flag;
+		try {
+			PreparedStatement stmt = conn.prepareStatement(
+					"update person set name=?, email=? where id=? ;",
+					Statement.RETURN_GENERATED_KEYS);
+			stmt.setString(1, person.getName());
+			stmt.setString(2, person.getEmail());
+			stmt.setInt(3, person.getId());
+
+			stmt.executeUpdate();
+
+			ResultSet rs = stmt.getGeneratedKeys();
+			if (!rs.next()) {
+				//FIXME: what if delete non existing stuff
+			}
+			flag = true;
+			rs.close();
+			stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			flag = false;
+		}
+		return flag;
 	}
 
 	@Override
 	public Person findPersonByEmail(String email) {
-		// TODO Auto-generated method stub
-		return null;
+		Person ret = null;
+		try {
+			PreparedStatement stmt = conn.prepareStatement("select * from person where email = ?;");
+			stmt.setString(1, email);
+
+			ResultSet rs = stmt.executeQuery();
+			if (!rs.next()) {
+				return null;
+			}
+			ret = new Person(rs.getInt(IDX_ID), rs
+						.getString(IDX_NAME), rs.getString(IDX_EMAIL));
+			rs.close();
+			stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return ret;
 	}
 
 	@Override
 	public int getNumOfJokes(Person person) {
-		// TODO Auto-generated method stub
-		return 0;
+		int ret = 0;
+		try {
+			PreparedStatement stmt = conn.prepareStatement("select count(*) from joke where speaker = ?;");
+			stmt.setInt(1, person.getId());
+
+			ResultSet rs = stmt.executeQuery();
+			if (!rs.next()) {
+				return 0;
+			}
+			ret = rs.getInt(1);
+			rs.close();
+			stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return ret;
 	}
 
 	@Override
@@ -122,8 +174,24 @@ public class SqlitePersonDao implements PersonDao {
 
 	@Override
 	public Person findPersonById(int id) {
-		// TODO Auto-generated method stub
-		return null;
+		Person ret = null;
+		try {
+			PreparedStatement stmt = conn.prepareStatement("select * from person where id = ?;");
+			stmt.setInt(1, id);
+
+			ResultSet rs = stmt.executeQuery();
+			if (!rs.next()) {
+				return null;
+			}
+			ret = new Person(rs.getInt(IDX_ID), rs
+						.getString(IDX_NAME), rs.getString(IDX_EMAIL));
+			rs.close();
+			stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return ret;
 	}
 
 }

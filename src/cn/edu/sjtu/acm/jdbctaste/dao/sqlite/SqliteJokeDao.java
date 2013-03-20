@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.LinkedList;
 import java.util.List;
 
 import cn.edu.sjtu.acm.jdbctaste.dao.JokeDao;
@@ -13,7 +15,7 @@ import cn.edu.sjtu.acm.jdbctaste.entity.Person;
 
 public class SqliteJokeDao implements JokeDao {
 
-	public static final int IDX_ID = 1, IDX_BODY = 2, IDX_SPEAKER = 3,
+	public static final int IDX_ID = 1, IDX_SPEAKER = 2, IDX_BODY = 3,
 			IDX_POST_TIME = 4, IDX_ZAN = 5;
 
 	private final Connection conn;
@@ -24,32 +26,137 @@ public class SqliteJokeDao implements JokeDao {
 
 	@Override
 	public int insertJoke(Joke joke) {
-		// TODO Auto-generated method stub
-		return 0;
+		int ret = -1;
+
+		try {
+			PreparedStatement stmt = conn.prepareStatement(
+					"insert into joke (speaker, body, zan) values (?,?,?);",
+					Statement.RETURN_GENERATED_KEYS);
+			stmt.setInt(1, joke.getSpeaker().getId());
+			stmt.setString(2, joke.getBody());
+			stmt.setInt(3, joke.getZan());
+
+			stmt.executeUpdate();
+			
+			ResultSet rs = stmt.getGeneratedKeys();
+			
+			if (rs.next()) {
+				int id = rs.getInt(1);
+				joke.setId(id);
+				ret = id;
+			}
+
+			rs.close();
+			stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			ret = -1;
+		}
+
+		return ret;
 	}
 
 	@Override
 	public boolean deleteJoke(Joke joke) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean flag ;
+		try {
+			PreparedStatement stmt = conn.prepareStatement(
+					"delete from joke where id = ?;",
+					Statement.RETURN_GENERATED_KEYS);
+			stmt.setInt(1, joke.getId());
+
+			stmt.executeUpdate();
+
+			ResultSet rs = stmt.getGeneratedKeys();
+			if (!rs.next()) {
+				//FIXME: what if delete non existing stuff
+			}
+			flag = true;
+			rs.close();
+			stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			flag = false;
+		}
+		return flag;
 	}
 
 	@Override
 	public boolean updateJoke(Joke joke) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean flag;
+		try {
+			PreparedStatement stmt = conn.prepareStatement(
+					"update joke set speaker=?, body=?, zan=? where id=? ;",
+					Statement.RETURN_GENERATED_KEYS);
+			stmt.setInt(1, joke.getSpeaker().getId());
+			stmt.setString(2, joke.getBody());
+			stmt.setInt(3, joke.getZan());
+			stmt.setInt(4, joke.getId());
+
+			stmt.executeUpdate();
+
+			ResultSet rs = stmt.getGeneratedKeys();
+			if (!rs.next()) {
+				//FIXME: what if delete non existing stuff
+			}
+			flag = true;
+			rs.close();
+			stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			flag = false;
+		}
+		return flag;
 	}
 
 	@Override
 	public List<Joke> findJokesOfPerson(Person person) {
-		// TODO Auto-generated method stub
-		return null;
+		List<Joke> ret = new LinkedList<Joke>();
+		try {
+			PreparedStatement stmt = conn.prepareStatement("select * from joke where speaker=? ;");
+			stmt.setInt(1, person.getId());
+
+			ResultSet rs = stmt.executeQuery();
+
+			while(rs.next()){
+				ret.add(new Joke(rs.getInt(IDX_ID), person,
+						rs.getString(IDX_BODY),
+						rs.getTimestamp(IDX_POST_TIME), rs.getInt(IDX_ZAN)));
+			}
+			rs.close();
+			stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+		return ret;
 	}
 
 	@Override
 	public List<Joke> getAllJokes() {
-		// TODO Auto-generated method stub
-		return null;
+		List<Joke> ret = new LinkedList<Joke>();
+
+		Statement stmt;
+		try {
+			stmt = conn.createStatement();
+
+			stmt.execute("select * from joke;");
+			ResultSet rs = stmt.getResultSet();
+
+			while (rs.next()) {
+				PersonDao personDao = SqliteDaoFactory.getInstance().getPersonDao();
+				Person speaker = personDao.findPersonById(rs.getInt(IDX_SPEAKER));
+				ret.add(new Joke(rs.getInt(IDX_ID), speaker,
+						rs.getString(IDX_BODY),
+						rs.getTimestamp(IDX_POST_TIME), rs.getInt(IDX_ZAN)));
+			}
+			rs.close();
+			stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+		return ret;
 	}
 
 	@Override
@@ -81,7 +188,27 @@ public class SqliteJokeDao implements JokeDao {
 
 	@Override
 	public List<Joke> findJokesWithZanMoreThan(int zan) {
-		// TODO Auto-generated method stub
-		return null;
+		List<Joke> ret = new LinkedList<Joke>();
+
+		try {
+			PreparedStatement stmt = conn.prepareStatement("select * from joke where zan > ?;");
+			stmt.setInt(1, zan);
+
+			ResultSet rs = stmt.executeQuery();
+
+			while (rs.next()) {
+				PersonDao personDao = SqliteDaoFactory.getInstance().getPersonDao();
+				Person speaker = personDao.findPersonById(rs.getInt(IDX_SPEAKER));
+				ret.add(new Joke(rs.getInt(IDX_ID), speaker,
+						rs.getString(IDX_BODY),
+						rs.getTimestamp(IDX_POST_TIME), rs.getInt(IDX_ZAN)));
+			}
+			rs.close();
+			stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+		return ret;
 	}
 }
